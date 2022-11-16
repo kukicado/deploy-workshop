@@ -30,6 +30,28 @@ app.get("/", async (req, res) => {
   res.send("Hello from DigitalOcean Deploy!");
 });
 
+app.get("/mdb-customers", async (req, res) => {
+  try {
+    const data = await MDBClient.db("deploy-store")
+      .collection("customers")
+      .find()
+      .limit(10)
+      .toArray();
+    res.json(data);
+  } catch (e) {
+    res.json(e);
+  }
+});
+
+app.get("/pg-customers", async (req, res) => {
+  try {
+    const data = await PGClient.query("SELECT * FROM customers LIMIT 10");
+    res.json(data.rows);
+  } catch (e) {
+    res.json(e);
+  }
+});
+
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });
